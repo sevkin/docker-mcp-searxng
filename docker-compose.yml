@@ -1,0 +1,29 @@
+
+services:
+  searxng:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: searxng-json:latest
+    container_name: searxng_json
+    restart: unless-stopped
+    # ports:
+    #   - "8080:8080"
+    networks:
+      - docker-mcp-searxng
+
+  mcp-searxng:
+    image: isokoliuk/mcp-searxng:latest
+    container_name: mcp_searxng
+    restart: unless-stopped
+    stdin_open: true
+    tty: false
+    networks:
+      - docker-mcp-searxng
+    environment:
+      - SEARXNG_URL=http://searxng:8080
+
+networks:
+  docker-mcp-searxng:
+    name: docker-mcp-searxng
+    driver: bridge
