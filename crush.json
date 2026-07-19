@@ -3,18 +3,8 @@
    "mcp":
    {
      "searxng-web-search": {
-       "type": "stdio",
-       "command": "docker",
-       "args": [
-         "run",
-         "-i",
-         "--rm",
-         "--network",
-         "docker-mcp-searxng",
-         "-e",
-         "SEARXNG_URL=http://searxng:8080",
-         "isokoliuk/mcp-searxng"
-       ]
+       "type": "http",
+       "url": "http://localhost:8088/mcp"
      }
    }
 }
