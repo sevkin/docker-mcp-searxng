@@ -1,14 +1,16 @@
-
 services:
   searxng:
     build:
       context: .
       dockerfile: Dockerfile
-    image: searxng-json:latest
+    # Local image tag, kept in sync with the base image pinned in the Dockerfile.
+    image: searxng-json:2026.5.31-7159b8aed
     container_name: searxng_json
     restart: unless-stopped
-    # ports:
-    #   - "8080:8080"
+    # No published ports: the engine is an internal backend that mcp-searxng
+    # reaches over the shared bridge network at http://searxng:8080. For a
+    # one-off look at the web UI or /config, publish 8080 on loopback instead
+    # of exposing it permanently.
     networks:
       - docker-mcp-searxng
 
@@ -19,13 +21,19 @@ services:
     networks:
       - docker-mcp-searxng
     environment:
+      # Resolve SearXNG over the shared bridge network, not through localhost.
       - SEARXNG_URL=http://searxng:8080
-      - MCP_HTTP_PORT=8088
+      # HTTP transport settings for MCP clients.
+      - MCP_HTTP_PORT=28088
       - MCP_HTTP_HOST=0.0.0.0
     ports:
-      - "127.0.0.1:8088:8088"
+      # Loopback only: clients connect to http://localhost:28088/mcp
+      # (see the OpenCode config and crush.json).
+      - "127.0.0.1:28088:28088"
 
 networks:
+  # Isolated bridge shared by the two containers; only published ports are
+  # reachable from the host.
   docker-mcp-searxng:
     name: docker-mcp-searxng
     driver: bridge

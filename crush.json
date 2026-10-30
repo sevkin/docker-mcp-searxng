@@ -4,7 +4,7 @@
    {
      "searxng-web-search": {
        "type": "http",
-       "url": "http://localhost:8088/mcp"
+       "url": "http://localhost:28088/mcp"
      }
    }
 }
